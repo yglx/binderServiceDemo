@@ -1,6 +1,7 @@
 // IMyAidlInterface.aidl
 package com.yglx.learnservice;
 import com.yglx.learnservice.MessageModel;
+import com.yglx.learnservice.MessageReceiver;
 // Declare any non-default types here with import statements
 
 interface IMyAidlInterface {
@@ -16,5 +17,9 @@ interface IMyAidlInterface {
     void sendMessage(in MessageModel messageModle);
 
     List<MessageModel> getMessage();
+
+    void registerReceiver(MessageReceiver messageReceiver);
+
+    void unregisterReceiver(MessageReceiver messageReceiver);
 
 }

@@ -5,6 +5,8 @@
 package com.yglx.testapplication;
 // Declare any non-default types here with import statements
 
+import android.util.Log;
+
 public interface IAddAidlInterface extends android.os.IInterface {
     /**
      * Local-side IPC implementation stub class.
@@ -41,6 +43,7 @@ public interface IAddAidlInterface extends android.os.IInterface {
 
         @Override
         public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException {
+            Log.d("jw", "aidl onTransact: Thread:"+Thread.currentThread().getId());
             switch (code) {
                 case INTERFACE_TRANSACTION: {
                     reply.writeString(DESCRIPTOR);
@@ -66,6 +69,7 @@ public interface IAddAidlInterface extends android.os.IInterface {
                 }
                 case TRANSACTION_add: {
                     data.enforceInterface(DESCRIPTOR);
+                    Log.d("jw", "aidl stub onTransact: Thread:"+Thread.currentThread().getId());
                     int _arg0;
                     _arg0 = data.readInt();
                     int _arg1;
@@ -144,6 +148,7 @@ public interface IAddAidlInterface extends android.os.IInterface {
                 android.os.Parcel _reply = android.os.Parcel.obtain();
                 int _result;
                 try {
+                    Log.d("jw", "aidl proxy add: "+Thread.currentThread().getId());
                     _data.writeInterfaceToken(DESCRIPTOR);
                     _data.writeInt(a);
                     _data.writeInt(b);
@@ -191,12 +196,43 @@ public interface IAddAidlInterface extends android.os.IInterface {
                 }
                 return _result;
             }
+            @Override
+            public void registerReceiver(MessageReceiver messageReceiver) throws android.os.RemoteException {
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeStrongBinder((((messageReceiver != null)) ? (messageReceiver.asBinder()) : (null)));
+                    mRemote.transact(Stub.TRANSACTION_registerReceiver, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override
+            public void unregisterReceiver(MessageReceiver messageReceiver) throws android.os.RemoteException {
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeStrongBinder((((messageReceiver != null)) ? (messageReceiver.asBinder()) : (null)));
+                    mRemote.transact(Stub.TRANSACTION_unregisterReceiver, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         static final int TRANSACTION_basicTypes = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
         static final int TRANSACTION_add = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
         static final int TRANSACTION_sendMessage = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
         static final int TRANSACTION_getMessage = (android.os.IBinder.FIRST_CALL_TRANSACTION + 3);
+        static final int TRANSACTION_registerReceiver = (android.os.IBinder.FIRST_CALL_TRANSACTION + 4);
+        static final int TRANSACTION_unregisterReceiver = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
     }
 
     /**
@@ -211,5 +247,8 @@ public interface IAddAidlInterface extends android.os.IInterface {
 
     public java.util.List<MessageModel> getMessage() throws android.os.RemoteException;
 
+    public void registerReceiver(MessageReceiver messageReceiver) throws android.os.RemoteException;
+
+    public void unregisterReceiver(MessageReceiver messageReceiver) throws android.os.RemoteException;
 
 }

@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             addService = IAddAidlInterface.Stub.asInterface(service);
+
             serviceConnected = true;
             tv.setText("bind success");
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         intent.setClassName("com.yglx.learnservice", "com.yglx.learnservice.MyService");
 //        intent.setComponent(new ComponentName("com.yglx.learnservice", "com.yglx.learnservice.MyService"));
         bindService(intent, mAddServiceConnection, BIND_AUTO_CREATE);
+        Log.d("jw", "bindAddService thread: "+Thread.currentThread().getId());
     }
 
     public void serviceAdd(View view) {
@@ -96,6 +99,41 @@ public class MainActivity extends AppCompatActivity {
             }
         }else {
             Toast.makeText(this, "not connect to remote service", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     *
+     */
+    private MessageReceiver mReceiver = new MessageReceiver.Stub() {
+        @Override
+        public void onMessageReceived(MessageModel receiveMessage) throws RemoteException {
+            Log.d("jw", "onMessageReceived: Thread:"+Thread.currentThread().getId());
+            tv.setText(receiveMessage.getContent());
+        }
+    };
+
+    public void regRemoteCallBack(View view) {
+        if (serviceConnected) {
+            try {
+                addService.registerReceiver(mReceiver);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else {
+            Toast.makeText(this, "service is not connected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void unregRemoteCallBack(View view) {
+        if (serviceConnected) {
+            try {
+                addService.unregisterReceiver(mReceiver);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else {
+            Toast.makeText(this, "service is not connected", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void bindRemoteService(View view) {
+        Log.d("jw", "bindRemoteService: thread:"+Thread.currentThread().getId());
         Intent intent = new Intent(MainActivity.this,MyService.class);
         intent.putExtra("initSum", 10);
         bindService(intent,mRemoteServiceConnection,BIND_AUTO_CREATE );
