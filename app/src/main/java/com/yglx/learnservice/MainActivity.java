@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -83,4 +86,24 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onServiceDisconnected: ");
         }
     };
+
+    public void addMessage(View view) {
+        MessageModel messageModel = new MessageModel("from", "first content");
+        try {
+            mRemoteService.sendMessage(messageModel);
+        } catch (RemoteException e) {
+            Log.d(TAG, "addMessage: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void getMsgs(View view) throws RemoteException {
+        List<MessageModel> list = mRemoteService.getMessage();
+        if(list!=null&&list.size()>0)
+        {
+            mTextView.setText(list.get(list.size()-1).getContent());
+        }else {
+            Toast.makeText(mService, "no msg", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

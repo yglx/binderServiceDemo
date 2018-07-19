@@ -75,6 +75,25 @@ public interface IAddAidlInterface extends android.os.IInterface {
                     reply.writeInt(_result);
                     return true;
                 }
+                case TRANSACTION_sendMessage: {
+                    data.enforceInterface(DESCRIPTOR);
+                    MessageModel _arg0;
+                    if ((0 != data.readInt())) {
+                        _arg0 = MessageModel.CREATOR.createFromParcel(data);
+                    } else {
+                        _arg0 = null;
+                    }
+                    this.sendMessage(_arg0);
+                    reply.writeNoException();
+                    return true;
+                }
+                case TRANSACTION_getMessage: {
+                    data.enforceInterface(DESCRIPTOR);
+                    java.util.List<MessageModel> _result = this.getMessage();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result);
+                    return true;
+                }
             }
             return super.onTransact(code, data, reply, flags);
         }
@@ -137,10 +156,47 @@ public interface IAddAidlInterface extends android.os.IInterface {
                 }
                 return _result;
             }
+            @Override
+            public void sendMessage(MessageModel messageModle) throws android.os.RemoteException {
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    if ((messageModle != null)) {
+                        _data.writeInt(1);
+                        messageModle.writeToParcel(_data, 0);
+                    } else {
+                        _data.writeInt(0);
+                    }
+                    mRemote.transact(Stub.TRANSACTION_sendMessage, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+            @Override
+            public java.util.List<MessageModel> getMessage() throws android.os.RemoteException {
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                java.util.List<MessageModel> _result;
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    mRemote.transact(Stub.TRANSACTION_getMessage, _data, _reply, 0);
+                    _reply.readException();
+                    _result = _reply.createTypedArrayList(MessageModel.CREATOR);
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+                return _result;
+            }
         }
 
         static final int TRANSACTION_basicTypes = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
         static final int TRANSACTION_add = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+        static final int TRANSACTION_sendMessage = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
+        static final int TRANSACTION_getMessage = (android.os.IBinder.FIRST_CALL_TRANSACTION + 3);
     }
 
     /**
@@ -150,4 +206,10 @@ public interface IAddAidlInterface extends android.os.IInterface {
     public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws android.os.RemoteException;
 
     public int add(int a, int b) throws android.os.RemoteException;
+
+    public void sendMessage(MessageModel messageModle) throws android.os.RemoteException;
+
+    public java.util.List<MessageModel> getMessage() throws android.os.RemoteException;
+
+
 }

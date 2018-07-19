@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +65,37 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             tv.setText(""+ans);
+        }
+    }
+
+    // 可能会阻塞，不宜在主线程调用，这里暂未考虑
+    public void getMsg(View view) {
+        if (serviceConnected) {
+            try {
+                List<MessageModel> list = addService.getMessage();
+                if (list.size() > 0) {
+                    tv.setText(list.get(list.size()-1).getContent());
+                } else {
+                    tv.setText("no message");
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else {
+            Toast.makeText(this, "not connect to remote service", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void sendMsg(View view) {
+        if (serviceConnected) {
+            MessageModel messageModel = new MessageModel("ss", "test Contetn");
+            try {
+                addService.sendMessage(messageModel);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else {
+            Toast.makeText(this, "not connect to remote service", Toast.LENGTH_SHORT).show();
         }
     }
 }

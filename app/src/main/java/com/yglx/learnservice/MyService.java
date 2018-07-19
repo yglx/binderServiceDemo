@@ -6,8 +6,14 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MyService extends Service {
     int initSum ;
+
+    List<MessageModel> mMessageModels = new ArrayList<>();
+
     public MyService() {
     }
 
@@ -27,6 +33,18 @@ public class MyService extends Service {
         @Override
         public int add(int a, int b) throws RemoteException {
             return a+b+initSum;
+        }
+
+        @Override
+        public void sendMessage(MessageModel messageModle) throws RemoteException {
+            synchronized (mMessageModels) {
+                mMessageModels.add(messageModle);
+            }
+        }
+
+        @Override
+        public List<MessageModel> getMessage() throws RemoteException {
+            return mMessageModels;
         }
     };
 }
