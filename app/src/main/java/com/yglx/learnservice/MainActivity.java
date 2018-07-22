@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        // TODO: 2018/7/20 judge if connect
         unbindService(mServiceConnection);
         super.onDestroy();
     }

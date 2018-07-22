@@ -46,6 +46,11 @@ public class MyService extends Service {
             synchronized (mMessageModels) {
                 mMessageModels.add(messageModle);
             }
+            try {
+                Thread.sleep(8000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             int count = mRemoteCallbackList.beginBroadcast();
             for (int i = 0; i < count; i++) {
                 MessageReceiver receiver = mRemoteCallbackList.getBroadcastItem(i);
