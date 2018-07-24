@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     ServiceConnection mAddServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d("jw", "onServiceConnected: thread:"+Thread.currentThread().getId());
             addService = IAddAidlInterface.Stub.asInterface(service);
 
             serviceConnected = true;

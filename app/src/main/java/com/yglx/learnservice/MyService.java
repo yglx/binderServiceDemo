@@ -18,8 +18,10 @@ public class MyService extends Service {
 
     private RemoteCallbackList<MessageReceiver> mRemoteCallbackList = new RemoteCallbackList<>();
 
-    public MyService() {
-        Log.d(TAG, "MyService: Thread:"+Thread.currentThread().getId());
+    @Override
+    public void onCreate() {
+        Log.d(TAG, "MyService onCreate: Thread:"+Thread.currentThread().getId());
+        super.onCreate();
     }
 
     @Override
@@ -47,6 +49,7 @@ public class MyService extends Service {
                 mMessageModels.add(messageModle);
             }
             try {
+                Log.d(TAG, "sendMessage: thread:"+Thread.currentThread().getId());
                 Thread.sleep(8000);
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getMsgs(View view) throws RemoteException {
         List<MessageModel> list = mRemoteService.getMessage();
+        Log.d(TAG, "getMsgs: Thread:"+Thread.currentThread().getId());
         if(list!=null&&list.size()>0)
         {
             mTextView.setText(list.get(list.size()-1).getContent());
